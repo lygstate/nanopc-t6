@@ -47,10 +47,6 @@ main() {
 
     check_installed 'screen' 'build-essential' 'python3' 'flex' 'bison' 'pahole' 'debhelper'  'bc' 'rsync' 'libncurses-dev' 'libelf-dev' 'libssl-dev' 'lz4' 'zstd'
 
-    if [ -z "$STY$TMUX" ]; then
-        echo 'reminder: run from a screen or a tmux session, this can take a while...'
-        exit 7
-    fi
 
     mkdir -p "kernel-$lv"
     if ! [ -e "kernel-$lv/$lf" ]; then
@@ -61,8 +57,9 @@ main() {
             echo "using local copy of linux $lv"
             cp -v "../dtb/$lf" "kernel-$lv"
         else
-            echo "downloading linux $lv"
-            wget "$linux" -P "kernel-$lv"
+            echo "downloading linux $lv from $linux"
+            echo curl -x socks5://192.168.199.1:1080 --create-dirs -O --output-dir "kernel-$lv" -L "$linux"
+            curl -x socks5://192.168.199.1:1080 --create-dirs -O --output-dir "kernel-$lv" -L "$linux"
         fi
     fi
 
